@@ -1,5 +1,6 @@
 ﻿#include<iostream>
 #include<fstream>
+#include <string>
 
 using namespace std;
 
@@ -8,7 +9,7 @@ struct Pipe
 	int id;
 	float length;
 	float diam;
-	bool repair = false;
+	bool repair;
 	bool exist = false;
 };
 
@@ -22,34 +23,68 @@ struct CS
 	bool exist = false;
 };
 
+template <typename T> //работа с обобщенным типом
+
+void checking(T& var, string com)
+{
+	do
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << com;
+		cin >> var;
+
+	} 
+	while (var < 0 || cin.fail());
+}
+
 void addpipe(Pipe& pipe1)
 {
-	cout << "Введите идентификатор: ";
-	cin >> pipe1.id;
-	cout << "Введите длину: ";
-	cin >> pipe1.length;
-	cout << "Введите диаметр: ";
-	cin >> pipe1.diam;
-	cout << "Ремонт: ";
-	cin >> pipe1.repair;
-	pipe1.exist = true;
+	string x;
+	x = "Введите идентификатор: ";
+	checking(pipe1.id, x);
+	x = "Введите длину ";
+	checking(pipe1.length, x);
+	x = "Введите диаметр ";
+	checking(pipe1.diam, x);
+	x = "Ремонт: ";
+	checking(pipe1.repair, x);
+
+	pipe1.exist = true; 
 }
 
 void addcs(CS& cs1)
 {
-	cout << "Введите идентификатор: ";
-	cin >> cs1.id;
-	cout << "Введите название: ";
-	cin >> cs1.name;
-	cout << "Введите количество цехов: ";
-	cin >> cs1.amount;
-	cout << "Введите количество цехов в работе: ";
-	cin >> cs1.amount_work;
-	cout << "Введите эффективность: ";
-	cin >> cs1.perfomance;
+	string x;
+	string str;
+	x = "Введите идентификатор: ";
+	checking(cs1.id, x);
+	do
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Введите название: ";
+		getline(cin, cs1.name);
+	} while (cin.fail());
+
+	x = "Введите количество цехов: ";
+	checking(cs1.amount, x);
+	do 
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Введите количество цехов в работе: ";
+		cin >> cs1.amount_work;
+	} 
+	while (cs1.amount_work > cs1.amount || cs1.amount_work < 0 || cin.fail());
+	do {
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Введите эффективность: ";
+		cin >> cs1.perfomance;
+	} while (cs1.perfomance < 0 || cs1.perfomance>1 || cin.fail());
+
 	cs1.exist = true;
-
-
 }
 
 void view(Pipe pipe1, CS cs1)
@@ -88,9 +123,19 @@ void editing(Pipe& pipe1)
 {
 	if (pipe1.exist == true)
 	{
+		string x;
 		cout << endl;
-		cout << "Ремонт: ";
-		cin >> pipe1.repair;
+		do 
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "Ремонт: ";
+			cin >> pipe1.repair;
+		}
+		while (cin.fail());
+
+		x = "Ремонт: ";
+		checking(pipe1.repair, x);
 	}
 	else
 	{
@@ -179,6 +224,7 @@ void output(Pipe pipe1, CS cs1)
 		cout << "Вы забыли ввести данные для КС!" << endl;
 		outf << "Вы забыли ввести данные для КС!";
 	}
+	outf.close();
 }
 
 void input(Pipe& pipe1, CS& cs1)
@@ -194,6 +240,7 @@ void input(Pipe& pipe1, CS& cs1)
 		fin >> pipe1.id >> pipe1.length >> pipe1.diam >> pipe1.repair;
 		fin >> cs1.id >> cs1.name >> cs1.amount >> cs1.amount_work >> cs1.perfomance;
 	}
+	fin.close();
 }
 
 
@@ -224,6 +271,18 @@ void menu()
 
 }
 
+int GetCorrectNumber(int left, int right)
+{
+	int x;
+	while (((cin >> x)).fail() || x<left || x>right)
+	{
+		cin.clear();
+		cin.ignore(1000, '\n');
+		cout << "Ошибка при вводе" << endl << "Введите команду: ";
+	}
+	return x;
+}
+
 int main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -233,14 +292,7 @@ int main()
 	while (true)
 	{
 		menu();
-		int number;
-		do
-		{
-			cin.clear();
-			cin.ignore(1000, '\n');
-			cin >> number;
-		} while ((number < 0 || number > 7) || (cin.fail()));
-		switch (number)
+		switch (GetCorrectNumber(0, 7))
 		{
 		case 0:
 		{
