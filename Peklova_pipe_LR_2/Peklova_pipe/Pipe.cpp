@@ -51,3 +51,15 @@ istream& operator >> (istream& in, Pipe& pipe)
 	pipe.repair = checking(0, 1, "Ремонт: ");
 	return in;
 }
+
+ofstream& operator << (ofstream& fout, const Pipe& pipe)
+{
+	fout << endl << pipe.id << endl << pipe.length << endl << pipe.diam << endl << pipe.repair;
+	return fout;
+}
+
+ifstream& operator >> (ifstream& fin, Pipe& pipe)
+{
+	fin >> pipe.id >> pipe.length >> pipe.diam >> pipe.repair;
+	return fin;
+}

@@ -10,46 +10,6 @@
 
 using namespace std;
 
-string file_name()
-{
-	string name_file;
-	cout << "Введите название файла: ";
-	cin.ignore(1, '\n');
-	getline(cin, name_file);
-	return name_file;
-}
-
-template <typename PC, typename T>
-vector<int> Find_PipeOrCS_ByFilter(unordered_map<int, PC>& pc, Filter<PC, T> f, T param)
-{
-	vector <int> res;
-	res.reserve(pc.size());
-	for (auto& pipe_or_cs : pc)
-	{
-		if (f(pipe_or_cs.second, param))
-			res.push_back(pipe_or_cs.first);
-	}
-	return res;
-}
-
-template <typename PC, typename T> 
-using Filter = bool(*)(PC& pc, T param);
-
-bool CheckByName(CS& cs, string param)
-{
-	return cs.Get_Name() == param;
-}
-
-bool CheckByRepair(Pipe& pipe, bool repair)
-{
-	return pipe.GetRepair() == repair;
-}
-
-bool CheckBy_Notworking_CS(CS& cs, float percent)
-{
-	return percent > ((cs.Get_amount() - cs.Get_amount_work()) / cs.Get_amount() * 100);
-}
-
 void delete_pipe(unordered_map<int, Pipe>& pipe_group)
 {
 	unordered_map<int, Pipe>::iterator number;
@@ -70,9 +30,17 @@ void delete_cs(unordered_map<int, CS>& cs_group)
 	cs_group.erase(number);
 }
 
+string file_name()
+{
+	string name_file;
+	cout << "Введите название файла: ";
+	cin.ignore(1, '\n');
+	getline(cin, name_file);
+	return name_file;
+}
+
 void menu()
 {
-	system("cls");
 	cout << "1.Добавить трубу" << endl;
 	cout << "2.Добавить КС" << endl;
 	cout << "3.Просмотр информации о трубе" << endl;
@@ -83,14 +51,45 @@ void menu()
 	cout << "8.Сохранить КС" << endl;
 	cout << "9.Загрузить трубы" << endl;
 	cout << "10.Загрузить КС" << endl;
-	cout << "11. Поиск труб по признаку 'в ремонте'" << endl;
+	cout << "11. Поиск труб по признаку repair" << endl;
 	cout << "12. Поиск КС по проценту незадействованных цехов" << endl;
 	cout << "13. Поиск КС по названию" << endl;
 	cout << "14. Удалить трубу" << endl;
 	cout << "15. Удалить КС" << endl;
-	cout << "16. Пакетное редактирование труб" << endl;
+	cout << "16. Пакетное редактирование труб (repair)" << endl;
+
 	cout << "0.Выход" << endl;
-	cout << "Введите команду: ";
+}
+
+template<typename PC, typename T>
+using Filter = bool(*)(PC& pc, T param);
+
+bool CheckByName(CS& cs, string param)
+{
+	return cs.Get_Name() == param;
+}
+
+bool CheckByRepair(Pipe& pipe, bool repair)
+{
+	return pipe.GetRepair() == repair;
+}
+
+bool CheckBy_Notworking_CS(CS& cs, float percent)
+{
+	return percent > ((cs.Get_amount() - cs.Get_amount_work()) / cs.Get_amount() * 100);
+}
+
+template<typename PC, typename T>
+vector<int> Find_PipeOrCS_ByFilter(unordered_map<int, PC>& pc, Filter<PC, T> f, T param)
+{
+	vector <int> res;
+	res.reserve(pc.size());
+	for (auto& pipe_or_cs : pc)
+	{
+		if (f(pipe_or_cs.second, param))
+			res.push_back(pipe_or_cs.first);
+	}
+	return res;
 }
 
 int main()
@@ -115,15 +114,16 @@ int main()
 		{
 			Pipe pipe;
 			cin >> pipe;
-			pipe_group.insert(pair <int, Pipe> (pipe.GetId(), pipe));
+			pipe_group.insert(pair<int, Pipe>(pipe.GetId(), pipe));
 			break;
 		}
 		case 2:
 		{
 			CS cs;
 			cin >> cs;
-			cs_group.insert(pair <int, CS> (cs.GetId(), cs));
+			cs_group.insert(pair<int, CS>(cs.GetId(), cs));
 			break;
+
 		}
 		case 3:
 		{
@@ -147,7 +147,6 @@ int main()
 				}
 			else cout << "Вы забыли ввести данные КС!\n";
 			system("Pause");
-			
 			break;
 		}
 		case 5:
@@ -203,7 +202,7 @@ int main()
 
 				fout.close();
 			}
-			else cout << "Файл не был открыт" << endl;
+			else cout << "Файл не открыт" << endl;
 			system("Pause");
 			break;
 		}
@@ -215,14 +214,14 @@ int main()
 			{
 				if (cs_group.size() > 0)
 				{
-					fout << cs_group.size() << endl;
-					for (auto iter : cs_group)
+				fout << cs_group.size() << endl;
+				for (auto iter:cs_group)
 						fout << iter.second;
 				}
 				else cout << "Вы забыли ввести данные для КС!\n";
 				fout.close();
 			}
-			else cout << "Файл не был открыт" << endl;
+			else cout << "Файл не открыт" << endl;
 			system("Pause");
 			break;
 		}
@@ -243,7 +242,7 @@ int main()
 				}
 				fin.close();
 			}
-			else cout << "Файл не был открыт" << endl;
+			else cout << "Файл не открыт" << endl;
 			break;
 		}
 		case 10:
@@ -264,7 +263,7 @@ int main()
 
 				fin.close();
 			}
-			else cout << "Файл не был открыт" << endl;
+			else cout << "Файл не открыт" << endl;
 			break;
 		}
 		case 11:
@@ -278,7 +277,7 @@ int main()
 					cout << pipe_group[i];
 			}
 			else
-				cout << "Вы забыли добавить трубы" << endl;
+				cout << "Забыли добавить трубы" << endl;
 			system("pause");
 			break;
 		}
@@ -294,7 +293,7 @@ int main()
 					cout << cs_group[i];
 			}
 			else
-				cout << "Вы забыли добавить КС" << endl;
+				cout << "Забыли добавить КС" << endl;
 			system("pause");
 			break;
 
@@ -311,7 +310,7 @@ int main()
 					cout << cs_group[i];
 			}
 			else
-				cout << "Вы забыли добавить КС" << endl;
+				cout << "Забыли добавить КС" << endl;
 			system("pause");
 			break;
 
@@ -340,12 +339,12 @@ int main()
 				for (int& i : Find_PipeOrCS_ByFilter(pipe_group, CheckByRepair, rep))
 				{
 					k = k + 1;
-					cout << "Редактирование " << k << "й выбранной трубы" << endl;
+					cout << "Редактирование " << k << "-й найденной трубы" << endl;
 					pipe_group[i].editing_pipe();
 				}
 			}
 			else
-			cout << "Вы забыли добавить трубы" << endl;
+			cout << "Забыли добавить трубы" << endl;
 			system("pause");
 			break;
 		}

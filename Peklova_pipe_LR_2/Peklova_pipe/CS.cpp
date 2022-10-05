@@ -52,7 +52,6 @@ ostream& operator << (ostream& out, const CS& cs)
 	return out;
 }
 
-
 istream& operator >> (istream& in, CS& cs)
 {
 	cout << "¬ведите название: ";
@@ -65,4 +64,19 @@ istream& operator >> (istream& in, CS& cs)
 	cout << "¬ведите эффективность: ";
 	cs.perfomance = checking(0, 1, "¬ведите эффективность: ");
 	return in;
+}
+
+ofstream& operator << (ofstream& fout, const CS& cs)
+{
+	fout << endl << cs.id << endl << cs.name << endl << cs.amount << endl << cs.amount_work << endl << cs.perfomance;
+	return fout;
+}
+
+ifstream& operator >> (ifstream& fin, CS& cs)
+{
+	fin >> cs.id;
+	fin.ignore(1, '\n');
+	getline(fin, cs.name);
+	fin >> cs.amount >> cs.amount_work >> cs.perfomance;
+	return fin;
 }
