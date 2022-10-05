@@ -23,7 +23,7 @@ struct CS
 	bool exist = false;
 };
 
-template <typename T> //работа с обобщенным типом
+template <typename T> 
 
 void checking(T& var, string com)
 {
@@ -65,7 +65,8 @@ void addcs(CS& cs1)
 		cin.ignore(1000, '\n');
 		cout << "Введите название: ";
 		getline(cin, cs1.name);
-	} while (cin.fail());
+	} 
+	while (cin.fail());
 
 	x = "Введите количество цехов: ";
 	checking(cs1.amount, x);
@@ -230,15 +231,14 @@ void output(Pipe pipe1, CS cs1)
 void input(Pipe& pipe1, CS& cs1)
 {
 	ifstream fin("InPut.txt");
-	pipe1.exist == true;
-	cs1.exist == true;
-
 	if (!fin.is_open())
 		cout << "Файл не может быть открыт!\n";
 	else
 	{
 		fin >> pipe1.id >> pipe1.length >> pipe1.diam >> pipe1.repair;
+		pipe1.exist == true;
 		fin >> cs1.id >> cs1.name >> cs1.amount >> cs1.amount_work >> cs1.perfomance;
+		cs1.exist == true;
 	}
 	fin.close();
 }
