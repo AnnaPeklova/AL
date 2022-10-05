@@ -6,6 +6,42 @@ using namespace std;
 
 unsigned int CS::MaxID = 0;
 
+CS::CS()
+{
+	id = ++MaxID;
+}
+
+int CS::GetId()
+{
+	return id;
+}
+
+unsigned int CS::GetMaxID()
+{
+	return MaxID;
+}
+
+int CS::Get_amount()
+{
+	return amount;
+}
+
+int CS::Get_amount_work()
+{
+	return amount_work;
+}
+
+std::string CS::Get_Name()
+{
+	return name;
+}
+
+void CS::editing_cs()
+{
+	cout << "Введите новое количество рабочих цехов: ";
+	amount_work = checking(0, amount, "Введите новое количество рабочих цехов: ");
+}
+
 ostream& operator << (ostream& out, const CS& cs)
 {
 	out << "Идентификатор: " << cs.id << endl;

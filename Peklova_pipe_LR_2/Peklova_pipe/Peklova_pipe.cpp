@@ -113,61 +113,240 @@ int main()
 		}
 		case 1:
 		{
-			Pipe pipe
-			pipe_group.push_back(pipe);
+			Pipe pipe;
+			cin >> pipe;
+			pipe_group.insert(pair <int, Pipe> (pipe.GetId(), pipe));
 			break;
 		}
 		case 2:
 		{
 			CS cs;
-			cs_group.push_back(cs);
+			cin >> cs;
+			cs_group.insert(pair <int, CS> (cs.GetId(), cs));
 			break;
 		}
 		case 3:
 		{
-			
+			if (pipe_group.size() > 0)
+				for (auto iter : pipe_group)
+				{
+					cout << endl;
+					cout << iter.second << endl;
+				}
+			else cout << "Вы забыли ввести данные трубы!\n";
 			system("Pause");
 			break;
 		}
 		case 4:
 		{
-			
+			if (cs_group.size() > 0)
+				for (auto iter : cs_group)
+				{
+					cout << endl;
+					cout << iter.second << endl;
+				}
+			else cout << "Вы забыли ввести данные КС!\n";
 			system("Pause");
 			
 			break;
 		}
 		case 5:
 		{
-			
+			unordered_map <int, Pipe>::iterator number;
+			cout << "Введите ID трубы: ";
+			if (pipe_group.size() > 0)
+			{
+				unsigned index = checking(1u, Pipe::GetMaxID(), "Введите ID трубы: ");
+				number = pipe_group.find(index);
+				number->second.editing_pipe();
+			}
+			else cout << "Вы забыли ввести данные трубы!\n";
 			system("Pause");
 			break;
 		}
 		case 6:
 		{
-		
+			unordered_map <int, CS>::iterator number;
+			cout << "Введите ID КС: ";
+			if (cs_group.size() > 0)
+			{
+				unsigned index = checking(1u, CS::GetMaxID(), "Введите ID КС: ");
+				number = cs_group.find(index);
+				number->second.editing_cs();
+			}
+			else cout << "Вы забыли ввести данные КС!\n";
 			system("Pause");
 			break;
 		}
 		case 7:
 		{
-			
+			ofstream fout;
+			fout.open(file_name(), ios::out);
+			if (fout.is_open())
+			{
+				if (pipe_group.size() > 0)
+				{
+					fout << pipe_group.size() << endl;
+					for (auto iter : pipe_group)
+						fout << iter.second;
+				}
+				else cout << "Вы забыли ввести данные для труб!\n";
+
+				if (cs_group.size() > 0)
+				{
+					fout << cs_group.size() << endl;
+					for (auto iter : cs_group)
+						fout << iter.second;
+				}
+				else cout << "Вы забыли ввести данные для КС!\n";
+				fout.close();
+
+				fout.close();
+			}
+			else cout << "Файл не был открыт" << endl;
 			system("Pause");
 			break;
 		}
 		case 8:
 		{
-			
+			ofstream fout;
+			fout.open(file_name(), ios::out);
+			if (fout.is_open())
+			{
+				if (cs_group.size() > 0)
+				{
+					fout << cs_group.size() << endl;
+					for (auto iter : cs_group)
+						fout << iter.second;
+				}
+				else cout << "Вы забыли ввести данные для КС!\n";
+				fout.close();
+			}
+			else cout << "Файл не был открыт" << endl;
 			system("Pause");
 			break;
 		}
 		case 9:
 		{
-			
+			ifstream fin;
+			fin.open(file_name(), ios::in);
+			if (fin.is_open())
+			{
+				pipe_group.erase(pipe_group.begin(), pipe_group.end());
+				int count;
+				fin >> count;
+				for (int i = 1; i <= count; ++i)
+				{
+					Pipe pipe;
+					fin >> pipe;
+					pipe_group.insert(pair<int, Pipe>(pipe.GetId(), pipe));
+				}
+				fin.close();
+			}
+			else cout << "Файл не был открыт" << endl;
 			break;
 		}
 		case 10:
 		{
-			
+			ifstream fin;
+			fin.open(file_name(), ios::in);
+			if (fin.is_open())
+			{
+				cs_group.erase(cs_group.begin(), cs_group.end());
+				int count;
+				fin >> count;
+				for (int i = 1; i <= count; ++i)
+				{
+					CS cs;
+					fin >> cs;
+					cs_group.insert(pair<int, CS>(cs.GetId(), cs));
+				}
+
+				fin.close();
+			}
+			else cout << "Файл не был открыт" << endl;
+			break;
+		}
+		case 11:
+		{
+			bool rep;
+			cout << "Repair filter(1 or 0): ";
+			rep = checking(0, 1, "Repair filter(1 or 0): ");
+			if (pipe_group.size() != 0)
+			{
+				for (int i : Find_PipeOrCS_ByFilter(pipe_group, CheckByRepair, rep))
+					cout << pipe_group[i];
+			}
+			else
+				cout << "Вы забыли добавить трубы" << endl;
+			system("pause");
+			break;
+		}
+		case 12:
+		{
+			float perc;
+			cout << "Введите процент незадействованных КС для поиска:";
+			cin >> perc;
+			if (cs_group.size() != 0)
+			{
+
+				for (int i : Find_PipeOrCS_ByFilter(cs_group, CheckBy_Notworking_CS, perc))
+					cout << cs_group[i];
+			}
+			else
+				cout << "Вы забыли добавить КС" << endl;
+			system("pause");
+			break;
+
+		}
+		case 13:
+		{
+			string name;
+			cout << "Введите название КС для поиска: ";
+			cin.ignore(1, '\n');
+			getline(cin, name);
+			if (cs_group.size() != 0)
+			{
+				for (int i : Find_PipeOrCS_ByFilter(cs_group, CheckByName, name))
+					cout << cs_group[i];
+			}
+			else
+				cout << "Вы забыли добавить КС" << endl;
+			system("pause");
+			break;
+
+		}
+		case 14:
+		{
+			if (pipe_group.size() > 0)
+				delete_pipe(pipe_group); else cout << "Вы забыли ввести трубы!" << endl;
+			break;
+		}
+		case 15:
+		{
+			if (cs_group.size() > 0)
+				delete_cs(cs_group); else cout << "Вы забыли ввести КС!" << endl;
+			break;
+		}
+		case 16:
+		{
+			unsigned int k;
+			k = 0;
+			bool rep;
+			cout << "Repair filter(1 or 0): ";
+			rep = checking(0, 1, "Repair filter(1 or 0): ");
+			if (pipe_group.size() != 0)
+			{
+				for (int& i : Find_PipeOrCS_ByFilter(pipe_group, CheckByRepair, rep))
+				{
+					k = k + 1;
+					cout << "Редактирование " << k << "й выбранной трубы" << endl;
+					pipe_group[i].editing_pipe();
+				}
+			}
+			else
+			cout << "Вы забыли добавить трубы" << endl;
+			system("pause");
 			break;
 		}
 		}
