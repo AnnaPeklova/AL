@@ -1,6 +1,6 @@
+#include <string>
 #include "CS.h"
 #include "Template.h"
-#include <string>
 
 using namespace std;
 

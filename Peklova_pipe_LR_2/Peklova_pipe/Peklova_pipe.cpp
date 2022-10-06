@@ -1,5 +1,5 @@
-﻿#include<iostream>
-#include<fstream>
+﻿#include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include "Pipe.h"
@@ -15,9 +15,17 @@ void delete_pipe(unordered_map<int, Pipe>& pipe_group)
 	unordered_map<int, Pipe>::iterator number;
 	unsigned int index;
 	cout << "Введите ID трубы, которую нужно удалить: ";
-	index = checking(1u, pipe_group.size(), "Введите ID трубы, которую нужно удалить: ");
+	index = checking(1u, Pipe::GetMaxID(), "Введите ID трубы, которую нужно удалить: ");
 	number = pipe_group.find(index);
-	pipe_group.erase(number);
+	if (pipe_group.count(index) != 0)
+	{
+		while (pipe_group.count(index) != 0)
+		{
+			pipe_group.erase(number);
+		}
+	}
+	else
+		cout << "Труба не найдена!\n";
 }
 
 void delete_cs(unordered_map<int, CS>& cs_group)
@@ -25,7 +33,7 @@ void delete_cs(unordered_map<int, CS>& cs_group)
 	unordered_map<int, CS>::iterator number;
 	unsigned int index;
 	cout << "Введите ID КС, которую нужно удалить: ";
-	index = checking(1u, cs_group.size(), "Введите ID КС, которую нужно удалить: ");
+	index = checking(1u, CS::GetMaxID(), "Введите ID КС, которую нужно удалить: ");
 	number = cs_group.find(index);
 	cs_group.erase(number);
 }
@@ -51,13 +59,12 @@ void menu()
 	cout << "8.Сохранить КС" << endl;
 	cout << "9.Загрузить трубы" << endl;
 	cout << "10.Загрузить КС" << endl;
-	cout << "11. Поиск труб по признаку repair" << endl;
+	cout << "11. Поиск труб по признаку 'в ремонте'" << endl;
 	cout << "12. Поиск КС по проценту незадействованных цехов" << endl;
 	cout << "13. Поиск КС по названию" << endl;
 	cout << "14. Удалить трубу" << endl;
 	cout << "15. Удалить КС" << endl;
-	cout << "16. Пакетное редактирование труб (repair)" << endl;
-
+	cout << "16. Пакетное редактирование труб" << endl;
 	cout << "0.Выход" << endl;
 }
 
@@ -128,12 +135,13 @@ int main()
 		case 3:
 		{
 			if (pipe_group.size() > 0)
-				for (auto iter : pipe_group)
+				for (auto& iter : pipe_group)
 				{
 					cout << endl;
 					cout << iter.second << endl;
 				}
-			else cout << "Вы забыли ввести данные трубы!\n";
+			else 
+				cout << "Вы забыли ввести данные трубы!\n";
 			system("Pause");
 			break;
 		}
@@ -145,7 +153,8 @@ int main()
 					cout << endl;
 					cout << iter.second << endl;
 				}
-			else cout << "Вы забыли ввести данные КС!\n";
+			else 
+				cout << "Вы забыли ввести данные КС!\n";
 			system("Pause");
 			break;
 		}
@@ -159,7 +168,8 @@ int main()
 				number = pipe_group.find(index);
 				number->second.editing_pipe();
 			}
-			else cout << "Вы забыли ввести данные трубы!\n";
+			else 
+				cout << "Вы забыли ввести данные трубы!\n";
 			system("Pause");
 			break;
 		}
@@ -173,7 +183,8 @@ int main()
 				number = cs_group.find(index);
 				number->second.editing_cs();
 			}
-			else cout << "Вы забыли ввести данные КС!\n";
+			else 
+				cout << "Вы забыли ввести данные КС!\n";
 			system("Pause");
 			break;
 		}
@@ -186,10 +197,11 @@ int main()
 				if (pipe_group.size() > 0)
 				{
 					fout << pipe_group.size() << endl;
-					for (auto iter : pipe_group)
+					for (auto iter:pipe_group)
 						fout << iter.second;
 				}
-				else cout << "Вы забыли ввести данные для труб!\n";
+				else 
+					cout << "Вы забыли ввести данные для труб!\n";
 
 				if (cs_group.size() > 0)
 				{
@@ -197,12 +209,14 @@ int main()
 					for (auto iter : cs_group)
 						fout << iter.second;
 				}
-				else cout << "Вы забыли ввести данные для КС!\n";
+				else 
+					cout << "Вы забыли ввести данные для КС!\n";
 				fout.close();
 
 				fout.close();
 			}
-			else cout << "Файл не открыт" << endl;
+			else 
+				cout << "Файл не открыт" << endl;
 			system("Pause");
 			break;
 		}
@@ -218,10 +232,12 @@ int main()
 				for (auto iter:cs_group)
 						fout << iter.second;
 				}
-				else cout << "Вы забыли ввести данные для КС!\n";
+				else 
+					cout << "Вы забыли ввести данные для КС!\n";
 				fout.close();
 			}
-			else cout << "Файл не открыт" << endl;
+			else 
+				cout << "Файл не открыт" << endl;
 			system("Pause");
 			break;
 		}
@@ -242,7 +258,8 @@ int main()
 				}
 				fin.close();
 			}
-			else cout << "Файл не открыт" << endl;
+			else 
+				cout << "Файл не открыт" << endl;
 			break;
 		}
 		case 10:
@@ -263,21 +280,22 @@ int main()
 
 				fin.close();
 			}
-			else cout << "Файл не открыт" << endl;
+			else 
+				cout << "Файл не открыт" << endl;
 			break;
 		}
 		case 11:
 		{
 			bool rep;
-			cout << "Repair filter(1 or 0): ";
-			rep = checking(0, 1, "Repair filter(1 or 0): ");
+			cout << "Фильтр ремонта (1 или 0): ";
+			rep = checking(0, 1, "Фильтр ремонта (1 или 0): ");
 			if (pipe_group.size() != 0)
 			{
 				for (int i : Find_PipeOrCS_ByFilter(pipe_group, CheckByRepair, rep))
 					cout << pipe_group[i];
 			}
 			else
-				cout << "Забыли добавить трубы" << endl;
+				cout << "Не добавлены трубы" << endl;
 			system("pause");
 			break;
 		}
@@ -293,7 +311,7 @@ int main()
 					cout << cs_group[i];
 			}
 			else
-				cout << "Забыли добавить КС" << endl;
+				cout << "Не добавлены КС" << endl;
 			system("pause");
 			break;
 
@@ -310,7 +328,7 @@ int main()
 					cout << cs_group[i];
 			}
 			else
-				cout << "Забыли добавить КС" << endl;
+				cout << "Не добавлены КС" << endl;
 			system("pause");
 			break;
 
@@ -318,13 +336,15 @@ int main()
 		case 14:
 		{
 			if (pipe_group.size() > 0)
-				delete_pipe(pipe_group); else cout << "Вы забыли ввести трубы!" << endl;
+				delete_pipe(pipe_group); 
+			else cout << "Вы забыли ввести трубы!" << endl;
 			break;
 		}
 		case 15:
 		{
 			if (cs_group.size() > 0)
-				delete_cs(cs_group); else cout << "Вы забыли ввести КС!" << endl;
+				delete_cs(cs_group); 
+			else cout << "Вы забыли ввести КС!" << endl;
 			break;
 		}
 		case 16:
@@ -332,19 +352,19 @@ int main()
 			unsigned int k;
 			k = 0;
 			bool rep;
-			cout << "Repair filter(1 or 0): ";
-			rep = checking(0, 1, "Repair filter(1 or 0): ");
+			cout << "Фильтр ремонта (1 или 0): ";
+			rep = checking(0, 1, "Фильтр ремонта (1 или 0): ");
 			if (pipe_group.size() != 0)
 			{
 				for (int& i : Find_PipeOrCS_ByFilter(pipe_group, CheckByRepair, rep))
 				{
 					k = k + 1;
-					cout << "Редактирование " << k << "-й найденной трубы" << endl;
+					cout << "Редактирование " << k << "й найденной трубы" << endl;
 					pipe_group[i].editing_pipe();
 				}
 			}
 			else
-			cout << "Забыли добавить трубы" << endl;
+				cout << "Не добалены трубы" << endl;
 			system("pause");
 			break;
 		}

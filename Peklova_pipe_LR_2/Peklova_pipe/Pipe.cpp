@@ -25,7 +25,6 @@ bool Pipe::GetRepair()
 	return repair;
 }
 
-
 void Pipe::editing_pipe()
 {
 	repair = !repair;
